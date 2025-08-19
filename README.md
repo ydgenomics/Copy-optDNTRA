@@ -121,4 +121,4 @@ All output files are organized in a structured results folder, ensuring easy acc
 
 If you use optDNTRA in your research, please cite: 
 
-- A unified cell atlas of vascular plants reveals cell-type foundational genes and accelerates gene discovery (DOI: https://doi.org/10.1016/j.cell.2025.07.036)
+- Xue Hao-Chen, Xu Zhou-Geng, Liu Yu-Jie & Wang Jia-Wei. (2025). A unified cell atlas of vascular plants reveals cell-type foundational genes and accelerates gene discovery. Cell. DOI: 10.1016/j.cell.2025.07.036
