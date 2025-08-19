@@ -28,7 +28,7 @@ export PATH=/path/to/optDNTRA/directory:$PATH
 Here's a summary of the available command-line arguments:
 
 ```
-$ python optDNTRA.py -h
+$ optDNTRA.py -h
 
 usage: optDNTRA.py [-h] -c defaults.yml -t transcripts.fasta [-f reads.fq] [-1 reads_1.fq] [-2 reads_2.fq] [-s samples.tab] [-o optDNTRA_out] [-r reference.fasta] [-se] [-ss {F,R,RF,FR}] [--trim] [--qc] [--buscoAsmt] [--omarkAsmt] [--emapperAnno] [-v] [-p THREADS] [--snakemakeOptions SNAKEMAKEOPTIONS]
 
@@ -90,7 +90,15 @@ Thank you for using optDNTRA (Optimization of De Novo Transcriptome RNA-seq Asse
 For a practical usage scenario, consider the following command to run optDNTRA on paired-end reads with trimming and quality control enabled:
 
 ```bash
-optDNTRA.py --transcript transcripts.fasta --left left_reads.fq --right right_reads.fq --threads 8 --trim --qc
+optDNTRA.py \
+ --config defaults.yml \
+ --transcript transcripts.fasta \
+ --left left_reads.fq \
+ --right right_reads.fq \
+ --outDir optDNTRA_out \
+ --trim \
+ --qc \
+ --threads 8
 ```
 
 ## Output
