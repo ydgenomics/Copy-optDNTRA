@@ -108,3 +108,9 @@ Upon completion, `optDNTRA` generates several output files in the specified dire
 - `$outDir/results/04-annotation/transAsm.emapper.annotations` (if enabled) - EggNOG-mapper functional annotations mapped to transcripts.
 
 All output files are organized in a structured results folder, ensuring easy access to quality control metrics, optimized transcripts, and assessment data for further analysis or reporting.
+
+## Citation
+
+If you use optDNTRA in your research, please cite: 
+
+- A unified cell atlas of vascular plants reveals cell-type foundational genes and accelerates gene discovery (DOI: https://doi.org/10.1016/j.cell.2025.07.036)
