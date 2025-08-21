@@ -30,57 +30,60 @@ Here's a summary of the available command-line arguments:
 ```
 $ optDNTRA.py -h
 
+
 usage: optDNTRA.py [-h] -c defaults.yml -t transcripts.fasta [-f reads.fq] [-1 reads_1.fq] [-2 reads_2.fq] [-s samples.tab] [-o optDNTRA_out] [-r reference.fasta] [-se] [-ss {F,R,RF,FR}] [--trim] [--qc] [--buscoAsmt] [--omarkAsmt] [--emapperAnno] [-v] [-p THREADS] [--snakemakeOptions SNAKEMAKEOPTIONS]
+
 
 optDNTRA: Optimization of De Novo Transcriptome RNA-seq Assembly
 
+
 For RNA-seq input data:
     If Paired-end:
-        -1 <string>, --left <string>         left reads
-        -2 <string>, --right <string>        right reads
+        -1 <string>, --left <string>         Left reads for paired-end RNA-seq data (.fq, .fastq, .fq.gz, .fastq.gz)
+        -2 <string>, --right <string>        Right reads for paired-end RNA-seq data (.fq, .fastq, .fq.gz, .fastq.gz)
     Or Single-end:
-        -f <string>, --fastq <string>        single-end reads
+        -f <string>, --fastq <string>        Single-end RNA-seq reads (.fq, .fastq, .fq.gz, .fastq.gz)
     Or
-        -s <string>, --sampleSheet <string>  tab-delimited text file indicating biological replicate relationships
+        -s <string>, --sampleSheet <string>  Sample metadata file for multi-sample analysis (tab-delimited)
         Example:
             cond_A    cond_A_rep1    A_rep1_left.fq    A_rep1_right.fq
             cond_A    cond_A_rep2    A_rep2_left.fq    A_rep2_right.fq
             cond_B    cond_B_rep1    B_rep1_left.fq    B_rep1_right.fq
             cond_B    cond_B_rep2    B_rep2_left.fq    B_rep2_right.fq
         For single-end, remove the 4th column in the text file.
-        
+
 
 options:
   -h, --help            show this help message and exit
   -c defaults.yml, --config defaults.yml
-                        Path to the workflow configuration file (defaults.yml)
+                        Configuration file for workflow parameters (YAML format)
   -t transcripts.fasta, --transcript transcripts.fasta
-                        Transcript FASTA file
+                        Input transcript assembly file (.fa, .fasta)
   -f reads.fq, --fastq reads.fq
-                        Single-end reads (FASTQ)
+                        Single-end RNA-seq reads (.fq, .fastq, .fq.gz, .fastq.gz)
   -1 reads_1.fq, --left reads_1.fq
-                        Left reads for paired-end data (FASTQ)
+                        Left reads for paired-end RNA-seq data (.fq, .fastq, .fq.gz, .fastq.gz)
   -2 reads_2.fq, --right reads_2.fq
-                        Right reads for paired-end data (FASTQ)
+                        Right reads for paired-end RNA-seq data (.fq, .fastq, .fq.gz, .fastq.gz)
   -s samples.tab, --sampleSheet samples.tab
-                        Tab-delimited file indicating biological replicate relationships
+                        Sample metadata file for multi-sample analysis (tab-delimited)
   -o optDNTRA_out, --outDir optDNTRA_out
-                        Output directory (default: optDNTRA_out)
+                        Output directory for results (default: optDNTRA_out)
   -r reference.fasta, --reference reference.fasta
-                        Reference transcriptome (FASTA)
-  -se, --singleEnd      Specify if the input data is single-end (not paired-end)
+                        Reference transcriptome for comparison (.fa, .fasta)
+  -se, --singleEnd      Set input data as single-end reads (default: paired-end)
   -ss {F,R,RF,FR}, --ss-lib-type {F,R,RF,FR}
-                        Strand-specific library type: single ('F' or 'R'), paired ('RF' or 'FR')
-  --trim                Enable trimming for input data
-  --qc                  Enable quality control for input data
-  --buscoAsmt           Enable BUSCO assessment
-  --omarkAsmt           Enable OMArk assessment
-  --emapperAnno         Enable EggNOG-mapper for functional annotation
-  -v, --verbose         Print detailed reports (verbose mode)
+                        Library strand specificity: F/R (single-end), RF/FR (paired-end)
+  --trim                Enable adapter trimming and quality filtering
+  --qc                  Enable quality control reports for input reads
+  --buscoAsmt           Enable BUSCO completeness assessment
+  --omarkAsmt           Enable OMArk protein domain assessment
+  --emapperAnno         Enable functional annotation with eggNOG-mapper
+  -v, --verbose         Enable verbose logging output
   -p THREADS, --threads THREADS
-                        Number of threads to use (default: 1)
+                        Number of CPU threads to use (default: 1)
   --snakemakeOptions SNAKEMAKEOPTIONS
-                        Additional options to pass directly to Snakemake, e.g. --snakemakeOptions='--dryrun'
+                        Additional Snakemake options (e.g., '--dryrun --rerun-incomplete')
 
 Thank you for using optDNTRA (Optimization of De Novo Transcriptome RNA-seq Assembly)!
 ```
