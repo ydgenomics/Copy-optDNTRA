@@ -22,12 +22,12 @@ optDNTRA: Optimization of De Novo Transcriptome RNA-seq Assembly
 
 For RNA-seq input data:
     If Paired-end:
-        -1 <string>, --left <string>         left reads
-        -2 <string>, --right <string>        right reads
+        -1 <string>, --left <string>         Left reads for paired-end RNA-seq data (.fq, .fastq, .fq.gz, .fastq.gz)
+        -2 <string>, --right <string>        Right reads for paired-end RNA-seq data (.fq, .fastq, .fq.gz, .fastq.gz)
     Or Single-end:
-        -f <string>, --fastq <string>        single-end reads
+        -f <string>, --fastq <string>        Single-end RNA-seq reads (.fq, .fastq, .fq.gz, .fastq.gz)
     Or
-        -s <string>, --sampleSheet <string>  tab-delimited text file indicating biological replicate relationships
+        -s <string>, --sampleSheet <string>  Sample metadata file for multi-sample analysis (tab-delimited)
         Example:
             cond_A    cond_A_rep1    A_rep1_left.fq    A_rep1_right.fq
             cond_A    cond_A_rep2    A_rep2_left.fq    A_rep2_right.fq
@@ -43,42 +43,42 @@ For RNA-seq input data:
     parser.add_argument("-c", "--config",
                         type=str,
                         required=True,
-                        help="Path to the workflow configuration file (defaults.yml)",
+                        help="Configuration file for workflow parameters (YAML format)",
                         metavar="defaults.yml",
                         dest="config")
 
     parser.add_argument("-t", "--transcript",
                         type=str,
                         required=True,
-                        help="Transcript FASTA file",
+                        help="Input transcript assembly file (.fa, .fasta)",
                         metavar="transcripts.fasta",
                         dest="transcript")
 
     parser.add_argument("-f", "--fastq",
                         type=str,
                         required=False,
-                        help="Single-end reads (FASTQ)",
+                        help="Single-end RNA-seq reads (.fq, .fastq, .fq.gz, .fastq.gz)",
                         metavar="reads.fq",
                         dest="fastq")
 
     parser.add_argument("-1", "--left",
                         type=str,
                         required=False,
-                        help="Left reads for paired-end data (FASTQ)",
+                        help="Left reads for paired-end RNA-seq data (.fq, .fastq, .fq.gz, .fastq.gz)",
                         metavar="reads_1.fq",
                         dest="left")
 
     parser.add_argument("-2", "--right",
                         type=str,
                         required=False,
-                        help="Right reads for paired-end data (FASTQ)",
+                        help="Right reads for paired-end RNA-seq data (.fq, .fastq, .fq.gz, .fastq.gz)",
                         metavar="reads_2.fq",
                         dest="right")
 
     parser.add_argument("-s", "--sampleSheet",
                         type=str,
                         required=False,
-                        help="Tab-delimited file indicating biological replicate relationships",
+                        help="Sample metadata file for multi-sample analysis (tab-delimited)",
                         metavar="samples.tab",
                         dest="batch")
 
@@ -86,70 +86,70 @@ For RNA-seq input data:
                         type=str,
                         default="optDNTRA_out",
                         required=False,
-                        help="Output directory (default: optDNTRA_out)",
+                        help="Output directory for results (default: optDNTRA_out)",
                         metavar="optDNTRA_out",
                         dest="outDir")
 
     parser.add_argument("-r", "--reference",
                         type=str,
                         required=False,
-                        help="Reference transcriptome (FASTA)",
+                        help="Reference transcriptome for comparison (.fa, .fasta)",
                         metavar="reference.fasta",
                         dest="reference")
 
     parser.add_argument("-se", "--singleEnd",
                         action="store_false",
-                        help="Specify if the input data is single-end (not paired-end)",
+                        help="Set input data as single-end reads (default: paired-end)",
                         dest="pairedEnd")
 
     parser.add_argument("-ss", "--ss-lib-type",
                         type=str,
                         required=False,
                         choices=["F", "R", "RF", "FR"],
-                        help="Strand-specific library type: single ('F' or 'R'), paired ('RF' or 'FR')",
+                        help="Library strand specificity: F/R (single-end), RF/FR (paired-end)",
                         dest="ssLibType")
 
     parser.add_argument("--trim",
                         action="store_true",
-                        help="Enable trimming for input data",
+                        help="Enable adapter trimming and quality filtering",
                         dest="trim")
 
     parser.add_argument("--qc",
                         action="store_true",
-                        help="Enable quality control for input data",
+                        help="Enable quality control reports for input reads",
                         dest="qc")
 
     parser.add_argument("--buscoAsmt",
                         action="store_true",
-                        help="Enable BUSCO assessment",
+                        help="Enable BUSCO completeness assessment",
                         dest="busco")
 
     parser.add_argument("--omarkAsmt",
                         action="store_true",
-                        help="Enable OMArk assessment",
+                        help="Enable OMArk protein domain assessment",
                         dest="omark")
 
     parser.add_argument("--emapperAnno",
                         action="store_true",
-                        help="Enable EggNOG-mapper for functional annotation",
+                        help="Enable functional annotation with eggNOG-mapper",
                         dest="emapper")
 
     parser.add_argument("-v", "--verbose",
                         action="store_true",
-                        help="Print detailed reports (verbose mode)",
+                        help="Enable verbose logging output",
                         dest="verbose")
 
     parser.add_argument("-p", "--threads",
                         type=int,
                         default=1,
                         required=False,
-                        help="Number of threads to use (default: 1)",
+                        help="Number of CPU threads to use (default: 1)",
                         dest="threads")
 
     parser.add_argument("--snakemakeOptions",
                         type=str,
                         required=False,
-                        help="Additional options to pass directly to Snakemake, e.g. --snakemakeOptions='--dryrun'",
+                        help="Additional Snakemake options (e.g., '--dryrun --rerun-incomplete')",
                         dest="snakemakeOptions")
 
     return parser
