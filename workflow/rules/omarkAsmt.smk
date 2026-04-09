@@ -6,6 +6,8 @@ from time import time
 
 ### Configuration Setup ### ----------------------------------------
 OMARK_DB = config["omark_database"]
+TAXID  = config["taxid"]
+TAXA_sqlite = config["taxa_sqlite"]
 
 
 ### Logging Setup ### ----------------------------------------
@@ -26,6 +28,8 @@ rule omark_assessment:
     params:
         omarkQuery=join(OMARK_DIR, "query.omamer"),
         omarkDB=OMARK_DB,
+        taxid=TAXID,
+        taxa_sqlite=TAXA_sqlite,
     threads: THREADS
     run:
         LOG_OMARKASMT.info("Running omarkAsmt.smk...")
@@ -39,7 +43,7 @@ rule omark_assessment:
          --out {params.omarkQuery} \
          --nthreads {threads} \
          &> {log}
-
+        cp {params.taxa_sqlite} ~/.etetoolkit/taxa.sqlite
         omark \
          --file {params.omarkQuery} \
          --database {params.omarkDB} \

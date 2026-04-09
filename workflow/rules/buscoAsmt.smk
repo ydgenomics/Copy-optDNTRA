@@ -6,6 +6,7 @@ from time import time
 
 ### Configuration Setup ### ----------------------------------------
 TRANSCRIPTPREFLT = config["transcript"]
+BUSCO_download= config["busco_download"]
 
 
 ### Logging Setup ### ----------------------------------------
@@ -33,7 +34,8 @@ checkpoint busco_assessment:
         lineage=BUSCO_LINEAGE,
         buscoPreFlt="busco_" + BUSCO_LINEAGE + "_preFlt",
         buscoPostFlt="busco_" + BUSCO_LINEAGE + "_postFlt",
-        downloadPath=directory(join(BUSCO_DIR, BUSCO_LINEAGE))
+        downloadPath=directory(join(BUSCO_DIR, BUSCO_LINEAGE)),
+        busco_download=BUSCO_download,
     threads: THREADS
     run:
         LOG_BUSCOASMT.info("Running buscoAsmt.smk...")
@@ -47,10 +49,11 @@ checkpoint busco_assessment:
          --mode transcriptome \
          --lineage_dataset {params.lineage} \
          --cpu {threads} \
-         --download_path {params.downloadPath} \
+         --download_path {params.busco_download} \
          --force \
          --out_path {params.downloadPath} \
          --quiet \
+         --offline \
          &> {log}
 
         busco \
@@ -59,10 +62,11 @@ checkpoint busco_assessment:
          --mode transcriptome \
          --lineage_dataset {params.lineage} \
          --cpu {threads} \
-         --download_path {params.downloadPath} \
+         --download_path {params.busco_download} \
          --force \
          --out_path {params.downloadPath} \
          --quiet \
+         --offline \
          &>> {log}
         """
         )

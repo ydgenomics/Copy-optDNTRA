@@ -11,26 +11,26 @@ reads: ["_1", "_2"]
 # Swiss-Prot database for TransDecoder.Predict.
 # If not provided, the workflow will automatically download the latest version from:
 # https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
-swiss_prot: "/data/work/optDNTRA/db/uniprot_sprot.fasta"
+swiss_prot: "./db/uniprot_sprot.fasta"
 
 # Pfam HMM database for TransDecoder.Predict.
 # If not provided, the workflow will automatically download the latest version from:
 # https://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
-pfam_hmm: "/data/input/Files/yangdong/WDL/optdntra/Pfam-A.hmm"
+pfam_hmm: "./db/Pfam-A.hmm"
 
 # BUSCO lineage dataset to be used (required).
 # Example: "eukaryota_odb10"
 busco_lineage: "eukaryota_odb10"
-busco_download: "/data/work/optDNTRA/db/busco_downloads"
+busco_download: "./db/busco_downloads"
 
 # Omark database path.
 # If not specified, the workflow will download the latest version from:
 # https://omabrowser.org/All/LUCA.h5
-omark_database: "/data/input/Files/yangdong/SOFTWARE/OMArk/LUCA.h5"
-taxa_sqlite: "/data/work/taxa.sqlite"
+omark_database: "./db/LUCA.h5"
+taxa_sqlite: "./db/taxa.sqlite"
 taxid: 4530
 
 # EggNOG-mapper database path.
 # If not specified, the workflow will download the latest version from:
 # http://eggnog6.embl.de/download/emapperdb-5.0.2/eggnog.db.gz
-emapper_database: "/data/input/Files/yangdong/SOFTWARE/eggNOGmapper/emapperDb/eggnog.db"
+emapper_database: "./db/eggnog.db"
