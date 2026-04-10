@@ -8,7 +8,7 @@
 - 修改添加`defaults.yml`
 - 修改`environment.yml`
 
-
+**构建环境**
 ```bash
 cd / && git clone https://github.com/ydgenomics/Copy-optDNTRA.git
 source /opt/software/miniconda3/bin/activate
@@ -16,6 +16,37 @@ mamba env create -n optdntra -f ./Copy-optDNTRA/environment.yml -y
 conda activate optdntra
 export PATH=/Copy-optDNTRA:$PATH
 optDNTRA.py -h
+```
+
+**测试**
+```shell
+cd /data/work/test && mkdir -p db
+# https://busco-data.ezlab.org/v5/data/lineages/eukaryota_odb10.2024-01-08.tar.gz
+# busco --download eukaryota_odb10
+tar -zxvf /data/work/optDNTRA/db/busco_downloads.tar.gz -C ./db
+cp /data/work/optDNTRA/db/uniprot_sprot.fasta ./db
+cp /data/input/Files/yangdong/WDL/optdntra/Pfam-A.hmm ./db
+cp /data/input/Files/yangdong/SOFTWARE/OMArk/LUCA.h5 ./db
+# python -c "from ete3 import NCBITaxa; NCBITaxa()"
+# ls -lh ~/.etetoolkit/taxa.sqlite
+cp /data/work/taxa.sqlite ./db
+cp /data/input/Files/yangdong/SOFTWARE/eggNOGmapper/emapperDb/eggnog.db ./db
+source /opt/software/miniconda3/bin/activate && conda activate optdntra
+export PATH=/Copy-optDNTRA:$PATH
+optDNTRA.py -h
+
+optDNTRA.py \
+--config /Copy-optDNTRA/defaults-dcs.yml \
+--transcript /Copy-optDNTRA/test_data/trinity.fasta \
+--left /Copy-optDNTRA/test_data/reads_1.fq.gz \
+--right /Copy-optDNTRA/test_data/reads_2.fq.gz \
+--outDir optDNTRA_out \
+--trim \
+--qc \
+--omarkAsmt \
+--buscoAsmt \
+--emapperAnno \
+--threads 8
 ```
 
 ---
