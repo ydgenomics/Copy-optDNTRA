@@ -5,6 +5,7 @@
 ## Changes by ydgenomics:
 - 修改`buscoAsmt.smk`，指定已下载的database，注意其指定的目录级别``
 - 修改`omarkAsmt.smk`，解决et3数据库，指定omark的分类数据库``，运行omark可选taxid，暂时没添加
+- 修改`emapper.sml`，添加输出`--excel`
 - 修改添加`defaults.yml`
 - 修改`environment.yml`
 
@@ -31,6 +32,7 @@ cp /data/input/Files/yangdong/SOFTWARE/OMArk/LUCA.h5 ./db
 # ls -lh ~/.etetoolkit/taxa.sqlite
 cp /data/work/taxa.sqlite ./db
 cp /data/input/Files/yangdong/SOFTWARE/eggNOGmapper/emapperDb/eggnog.db ./db
+cp /data/input/Files/yangdong/SOFTWARE/eggNOGmapper/emapperDb/eggnog_proteins.dmnd ./db
 source /opt/software/miniconda3/bin/activate && conda activate optdntra
 export PATH=/Copy-optDNTRA:$PATH
 optDNTRA.py -h

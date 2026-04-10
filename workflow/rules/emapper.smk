@@ -43,6 +43,7 @@ rule emapper:
          --output transAsm \
          --output_dir {output.emapperOut} \
          --cpu {threads} \
+         --excel \
          &> {log}
          """
         )
