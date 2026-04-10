@@ -1,12 +1,12 @@
-# optDNTRA: Optimization of De Novo Transcriptome RNA-seq Assembly
+# [optDNTRA: Optimization of De Novo Transcriptome RNA-seq Assembly](https://github.com/zywu2002/optDNTRA)
 
 ---
 
 ## Changes by ydgenomics:
 - 修改`buscoAsmt.smk`，指定已下载的database，注意其指定的目录级别``
-- 修改`omarkAsmt.smk`，解决et3数据库，指定omark的分类数据库``，运行omark可选taxid，暂时没添加
-- 修改`emapper.sml`，添加输出`--excel`
-- 修改添加`defaults.yml`
+- 修改`omarkAsmt.smk`，解决et3数据库，指定omark的分类数据库，将taxa.sqlite复制到~/.etetoolkit目录下
+- 修改`emapper.sml`，添加输出`--excel`，*需要两个文件*
+- 修改添加`defaults.yml`，添加更多的输入参数，`busco_download`, `taxa_sqlite`
 - 修改`environment.yml`
 
 **构建环境**
@@ -37,6 +37,7 @@ source /opt/software/miniconda3/bin/activate && conda activate optdntra
 export PATH=/Copy-optDNTRA:$PATH
 optDNTRA.py -h
 
+mkdir -p ~/.etetoolkit
 optDNTRA.py \
 --config /Copy-optDNTRA/defaults-dcs.yml \
 --transcript /Copy-optDNTRA/test_data/trinity.fasta \

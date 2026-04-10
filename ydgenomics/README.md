@@ -53,3 +53,6 @@ TransDecoder -t target_transcripts.fasta -m 100 --single_best_only -O transdecod
 
 ## References
 - Trinity 实战指南：无参考转录组组装从原理到实操 [wechat](https://mp.weixin.qq.com/s/1GZBS58SY2UnBwY29rHj0w)
+- 组装出的转录本太多，咋办？[wechat](https://mp.weixin.qq.com/s/6fT53eTED375OlsepdqmFw)
+- 转录组的组装|三种方式 [wechat](https://mp.weixin.qq.com/s/6exQwZefVkyLI1unI4XvMA)
+- 2026 | Genome Biology | 三代测序无参转录组组装哪家强？ [wechat](https://mp.weixin.qq.com/s/p32k2lDOXzBOczqiAElhlw)

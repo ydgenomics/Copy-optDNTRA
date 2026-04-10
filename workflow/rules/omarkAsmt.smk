@@ -43,6 +43,7 @@ rule omark_assessment:
          --out {params.omarkQuery} \
          --nthreads {threads} \
          &> {log}
+        mkdir -p ~/.etetoolkit
         cp {params.taxa_sqlite} ~/.etetoolkit/taxa.sqlite
         omark \
          --file {params.omarkQuery} \
