@@ -50,6 +50,18 @@ optDNTRA.py \
 --buscoAsmt \
 --emapperAnno \
 --threads 8
+
+optDNTRA.py \
+--config /Copy-optDNTRA/defaults-dcs.yml \
+--transcript /Copy-optDNTRA/test_data/trinity.fasta \
+--sampleSheet /data/work/test/sample.tsv \
+--outDir optDNTRA_out1 \
+--trim \
+--qc \
+--omarkAsmt \
+--buscoAsmt \
+--emapperAnno \
+--threads 8
 ```
 
 ---

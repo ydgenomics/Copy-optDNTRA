@@ -4,8 +4,7 @@ version 1.0
 workflow Hello{
   input{
     File transcript_fa="/Files/yangdong/WDL/optdntra/trinity.fasta"
-    File left_fq="/Files/yangdong/WDL/optdntra/reads_1.fq.gz"
-    File right_fq="/Files/yangdong/WDL/optdntra/reads_2.fq.gz"
+    Array[File] fq_list=["/Files/yangdong/WDL/optdntra/reads_1.fq.gz","/Files/yangdong/WDL/optdntra/reads_2.fq.gz"] # "_1" and "_2"
     File swiss_prot="/Files/yangdong/WDL/optdntra/uniprot_sprot.fasta"
     File pfam_hmm="/Files/yangdong/WDL/optdntra/Pfam-A.hmm"
     File busco_downloads="/Files/yangdong/WDL/optdntra/eukaryota_odb10.tar.gz"
@@ -21,8 +20,7 @@ workflow Hello{
   call optdntra{
     input:
     transcript_fa=transcript_fa,
-    left_fq=left_fq,
-    right_fq=right_fq,
+    fq_list=fq_list,
     swiss_prot=swiss_prot,
     pfam_hmm=pfam_hmm,
     taxa_sqlite=taxa_sqlite,
@@ -42,8 +40,7 @@ workflow Hello{
 task optdntra{
   input {
     File transcript_fa
-    File left_fq
-    File right_fq
+    Array[File] fq_list
     File swiss_prot
     File pfam_hmm
     File taxa_sqlite
@@ -56,33 +53,44 @@ task optdntra{
     Int cpu
     Int mem
   }
-  command {
+  command <<<
     mkdir -p db
     tar -zxvf ~{busco_downloads} -C ./db
-    cp ~{swiss_prot} ./db
-    cp ~{pfam_hmm} ./db
-    cp ~{omark_database} ./db
-    cp ~{taxa_sqlite} ./db
-    cp ~{eggnog_database} ./db
-    cp ~{eggnog_proteins_dmnd} ./db
+    ln -s ~{swiss_prot} ./db
+    ln -s ~{pfam_hmm} ./db
+    ln -s ~{omark_database} ./db
+    ln -s ~{taxa_sqlite} ./db
+    ln -s ~{eggnog_database} ./db
+    ln -s ~{eggnog_proteins_dmnd} ./db
 
     source /opt/software/miniconda3/bin/activate && conda activate optdntra
     export PATH=/Copy-optDNTRA:$PATH
     optDNTRA.py -h
 
     mkdir -p ~/.etetoolkit
-
-    optDNTRA.py \
-    --config /Copy-optDNTRA/defaults-dcs.yml \
-    --transcript ~{transcript_fa} \
-    --left ~{left_fq} \
-    --right ~{right_fq} \
-    --outDir ~{outDir} \
-    --trim \
-    --qc \
-    ~{tools} \
-    --threads ~{cpu}
-  }
+    
+    FQ_ARRAY=(~{sep=' ' fq_list})
+    
+    if [ ${#FQ_ARRAY[@]} -ge 2 ]; then
+        optDNTRA.py \
+        --config /Copy-optDNTRA/defaults-dcs.yml \
+        --transcript ~{transcript_fa} \
+        --left "$${FQ_ARRAY[0]}" \
+        --right "$${FQ_ARRAY[1]}" \
+        --outDir ~{outDir} \
+        --trim --qc ~{tools} \
+        --threads ~{cpu}
+    else
+        optDNTRA.py \
+        --config /Copy-optDNTRA/defaults-dcs.yml \
+        --transcript ~{transcript_fa} \
+        --fastq "$${FQ_ARRAY[0]}" \
+        --singleEnd \
+        --outDir ~{outDir} \
+        --trim --qc ~{tools} \
+        --threads ~{cpu}
+    fi
+  >>>
   runtime {
     docker_url: "stereonote_hpc/yangdong_34155ddaf01e4861a89d2fda3f0f74ef_private:latest"
     req_cpu: cpu
