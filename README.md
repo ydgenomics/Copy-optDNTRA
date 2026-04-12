@@ -4,8 +4,8 @@
 
 ## Changes by ydgenomics:
 - 修改`buscoAsmt.smk`，指定已下载的database，注意其指定的目录级别``
-- 修改`omarkAsmt.smk`，解决et3数据库，指定omark的分类数据库，将taxa.sqlite复制到~/.etetoolkit目录下
-- 修改`emapper.sml`，添加输出`--excel`，*需要两个文件*
+- 修改`omarkAsmt.smk`，解决et3数据库，指定omark的分类数据库，将taxa.sqlite复制到~/.etetoolkit/taxa.sqlite
+- 修改`emapper.smk`，添加输出`--excel`，*需要两个文件*
 - 修改添加`defaults.yml`，添加更多的输入参数，`busco_download`, `taxa_sqlite`
 - 修改`environment.yml`
 

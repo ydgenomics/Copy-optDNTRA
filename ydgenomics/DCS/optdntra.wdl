@@ -7,7 +7,7 @@ workflow Hello{
     Array[File] fq_list=["/Files/yangdong/WDL/optdntra/reads_1.fq.gz","/Files/yangdong/WDL/optdntra/reads_2.fq.gz"] # "_1" and "_2"
     File swiss_prot="/Files/yangdong/WDL/optdntra/uniprot_sprot.fasta"
     File pfam_hmm="/Files/yangdong/WDL/optdntra/Pfam-A.hmm"
-    File busco_downloads="/Files/yangdong/WDL/optdntra/eukaryota_odb10.tar.gz"
+    File busco_downloads="/Files/yangdong/WDL/optdntra/busco_downloads.tar.gz"
     File omark_database="/Files/yangdong/SOFTWARE/OMArk/LUCA.h5"
     File taxa_sqlite="/Files/yangdong/SOFTWARE/OMArk/taxa.sqlite"
     File eggnog_database="/Files/yangdong/SOFTWARE/eggNOGmapper/emapperDb/eggnog.db"
@@ -69,22 +69,27 @@ task optdntra{
 
     mkdir -p ~/.etetoolkit
     
-    FQ_ARRAY=(~{sep=' ' fq_list})
+    FQ_ARRAY=~{sep="," fq_list}
+    IFS=',' read -ra ARR <<< "$FQ_ARRAY"
+    read -r left_read right_read <<< "${ARR[0]} ${ARR[1]}"
+    echo $left_read && echo $right_read
     
-    if [ ${#FQ_ARRAY[@]} -ge 2 ]; then
+    if [ ${#ARR[@]} -ge 2 ]; then
+        echo "Run paired analysis..."
         optDNTRA.py \
         --config /Copy-optDNTRA/defaults-dcs.yml \
         --transcript ~{transcript_fa} \
-        --left "$${FQ_ARRAY[0]}" \
-        --right "$${FQ_ARRAY[1]}" \
+        --left "$left_read" \
+        --right "$right_read" \
         --outDir ~{outDir} \
         --trim --qc ~{tools} \
         --threads ~{cpu}
     else
+        echo "Run single analysis..."
         optDNTRA.py \
         --config /Copy-optDNTRA/defaults-dcs.yml \
         --transcript ~{transcript_fa} \
-        --fastq "$${FQ_ARRAY[0]}" \
+        --fastq "$left_read" \
         --singleEnd \
         --outDir ~{outDir} \
         --trim --qc ~{tools} \
