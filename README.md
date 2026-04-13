@@ -54,7 +54,7 @@ optDNTRA.py \
 optDNTRA.py \
 --config /Copy-optDNTRA/defaults-dcs.yml \
 --transcript /Copy-optDNTRA/test_data/trinity.fasta \
---sampleSheet /data/work/test/sample.tsv \
+--sampleSheet optdntra.tsv \
 --outDir optDNTRA_out1 \
 --trim \
 --qc \
