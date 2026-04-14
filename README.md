@@ -21,23 +21,25 @@ optDNTRA.py -h
 
 **测试**
 ```shell
+# 准备背景数据库
 cd /data/work/test && mkdir -p db
 # https://busco-data.ezlab.org/v5/data/lineages/eukaryota_odb10.2024-01-08.tar.gz
 # busco --download eukaryota_odb10
 tar -zxvf /data/work/optDNTRA/db/busco_downloads.tar.gz -C ./db
-cp /data/work/optDNTRA/db/uniprot_sprot.fasta ./db
-cp /data/input/Files/yangdong/WDL/optdntra/Pfam-A.hmm ./db
-cp /data/input/Files/yangdong/SOFTWARE/OMArk/LUCA.h5 ./db
+cp uniprot_sprot.fasta ./db
+ln -s /data/input/Files/yangdong/WDL/optdntra/Pfam-A.hmm ./db
+ln -s /data/input/Files/yangdong/SOFTWARE/OMArk/LUCA.h5 ./db
 # python -c "from ete3 import NCBITaxa; NCBITaxa()"
 # ls -lh ~/.etetoolkit/taxa.sqlite
-cp /data/work/taxa.sqlite ./db
-cp /data/input/Files/yangdong/SOFTWARE/eggNOGmapper/emapperDb/eggnog.db ./db
-cp /data/input/Files/yangdong/SOFTWARE/eggNOGmapper/emapperDb/eggnog_proteins.dmnd ./db
-source /opt/software/miniconda3/bin/activate && conda activate optdntra
-export PATH=/Copy-optDNTRA:$PATH
-optDNTRA.py -h
+ln -s /data/work/taxa.sqlite ./db
+ln -s /data/input/Files/yangdong/SOFTWARE/eggNOGmapper/emapperDb/eggnog.db ./db
+ln -s /data/input/Files/yangdong/SOFTWARE/eggNOGmapper/emapperDb/eggnog_proteins.dmnd ./db
 
-mkdir -p ~/.etetoolkit
+# 激活conda子环境optdntra
+source /opt/software/miniconda3/bin/activate && conda activate optdntra
+export PATH=/Copy-optDNTRA:$PATH && optDNTRA.py -h
+
+# 双端测序数据跑
 optDNTRA.py \
 --config /Copy-optDNTRA/defaults-dcs.yml \
 --transcript /Copy-optDNTRA/test_data/trinity.fasta \
@@ -51,6 +53,7 @@ optDNTRA.py \
 --emapperAnno \
 --threads 8
 
+# 基于tab分割的文本传参
 optDNTRA.py \
 --config /Copy-optDNTRA/defaults-dcs.yml \
 --transcript /Copy-optDNTRA/test_data/trinity.fasta \
