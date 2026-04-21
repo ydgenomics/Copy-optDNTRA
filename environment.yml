@@ -30,5 +30,6 @@ dependencies:
   - gffread
   - multiqc
   - seqtk
+  - sortmerna
   - pip:
     - fastqe
