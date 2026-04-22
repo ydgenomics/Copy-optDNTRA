@@ -11,12 +11,12 @@
 
 **构建环境**
 ```bash
-cd / && git clone https://github.com/ydgenomics/Copy-optDNTRA.git
+cd / && git clone --depth 1 https://github.com/ydgenomics/Copy-optDNTRA.git
 source /opt/software/miniconda3/bin/activate
 mamba env create -n optdntra -f ./Copy-optDNTRA/environment.yml -y
 conda activate optdntra
-export PATH=/Copy-optDNTRA:$PATH
-optDNTRA.py -h
+export PATH=/Copy-optDNTRA:$PATH && optDNTRA.py -h
+conda create -n tool gffread multiqc sortmerna -y
 ```
 
 **测试**

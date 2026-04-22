@@ -1,6 +1,9 @@
 # [optDNTRA](https://github.com/zywu2002/optDNTRA)
 
 
+ 
+
+
 ## Project
 杨同学，我们问了，现在我们是有Sp（伴矿景天，就是我们现在在测的超富集型的景天）和Sa（东南景天，不富集型的景天）的转录组测序的原始数据，现成的那个Trinity.fasta文件是把这两个测序数据合并之后组装出来的（意思可能是把Sa和Sp所有的数据合在一起当成是一个物种，拿trinity组装了一个出来），那这样的话这个Trinity.fasta我们能用不，是不是应该重新装一个只有Sp的Trinity.fasta
 
@@ -55,4 +58,5 @@ TransDecoder -t target_transcripts.fasta -m 100 --single_best_only -O transdecod
 - Trinity 实战指南：无参考转录组组装从原理到实操 [wechat](https://mp.weixin.qq.com/s/1GZBS58SY2UnBwY29rHj0w)
 - 组装出的转录本太多，咋办？[wechat](https://mp.weixin.qq.com/s/6fT53eTED375OlsepdqmFw)
 - 转录组的组装|三种方式 [wechat](https://mp.weixin.qq.com/s/6exQwZefVkyLI1unI4XvMA)
+- 转录组无参比对教程 | Trinity https://mp.weixin.qq.com/s/UAnaiSMxrUeI6bBGnfIcZQ
 - 2026 | Genome Biology | 三代测序无参转录组组装哪家强？ [wechat](https://mp.weixin.qq.com/s/p32k2lDOXzBOczqiAElhlw)
