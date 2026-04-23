@@ -1,8 +1,34 @@
+# [sortmerna](https://github.com/sortmerna/sortmerna)
+SortMeRNA is a local sequence alignment tool for filtering, mapping and clustering.
 
+The core algorithm is based on approximate seeds and allows for sensitive analysis of NGS reads. The main application of SortMeRNA is filtering rRNA from metatranscriptomic data. SortMeRNA takes as input files of reads (fasta, fastq, fasta.gz, fastq.gz) and one or multiple rRNA database file(s), and sorts apart aligned and rejected reads into two files. SortMeRNA works with Illumina, Ion Torrent and PacBio data, and can produce SAM and BLAST-like alignments.
+
+
+##  Usage
 
 ```shell
 # https://github.com/sortmerna/sortmerna/tree/master/data/rRNA_databases
 sortmerna --index --ref smr_v4.3_sensitive_db.fasta --workdir /data/work/sortmerna/tmp
+
+# 进入数据库目录
+cd /data/work/sortmerna
+
+# 确保索引文件存在（如果还没有 .idx 文件）
+for db in *.fasta; do
+    indexdb_rna --ref "$db"
+done
+
+# 运行 SortMeRNA 过滤
+sortmerna --ref /data/work/sortmerna/smr_v4.3_sensitive_db.fasta,/data/work/sortmerna/smr_v4.3_sensitive_db.idx \
+          --reads /path/to/your_clean_R1.fastq.gz \
+          --reads /path/to/your_clean_R2.fastq.gz \
+          --other /path/to/output/non_rRNA \
+          --aligned /path/to/output/rRNA \
+          --paired_in \
+          --fastx \
+          --threads 8 \
+          --out2 \
+          --workdir /data/work/sortmerna/temp_run
 
 # wget https://github.com/sortmerna/sortmerna/tree/master/data/rRNA_databases/rfam-5s-database-id98.fasta
 sortmerna --ref ${SORTMERNA_REF}/rfam-5.8s-database-id98.fasta \
@@ -52,3 +78,6 @@ done
 
 echo "所有数据库下载完成！"
 ```
+
+## references
+- 生信必备工具解析：SortMeRNA——高效剔除rRNA的“数据清道夫” https://mp.weixin.qq.com/s/Ny-Qf7Q0jBbvwMW4Y0-agQ

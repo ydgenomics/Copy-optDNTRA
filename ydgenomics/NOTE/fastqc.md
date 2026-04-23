@@ -1,6 +1,7 @@
 # fastqc
 
 ## Usage
+!一定要设置threads和memory，默认的实在太慢，很多资源都被空闲了
 ```shell
 fastqc *.fq *.gz --memory 16G --threads 8
 ```
