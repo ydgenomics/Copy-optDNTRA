@@ -4,8 +4,12 @@
 # --- 参数设置 (使用 ${N:-default} 语法) ---
 # $1, $2... 代表脚本后的第1, 2...个参数
 # 如果用户没有输入，则自动使用冒号后面的路径/数值
-LEFT_fq=${1:-"/data/users/yangdong/yangdong_5b07fc5c978d4acb9b44c83305ac3a2b/online/TEST/test/cleaned_data/0A1R_w4q20m35_N_clean_R1.fastq.gz"}
-RIGHT_fq=${2:-"/data/users/yangdong/yangdong_5b07fc5c978d4acb9b44c83305ac3a2b/online/TEST/test/cleaned_data/0A1R_w4q20m35_N_clean_R2.fastq.gz"}
+# LEFT_fq="/Files/RawData/ML150007317_L01/ML150007317_L01_266_1.fq.gz"
+# RIGHT_fq="/Files/RawData/ML150007317_L01/ML150007317_L01_266_2.fq.gz"
+# SORTMERNA_DB="/data/work/sortmerna/smr_v4.3_sensitive_db_rfam_seeds.fasta"
+# SAMPLE_SIZE=10000
+LEFT_fq=${1:-"/Files/RawData/ML150007317_L01/ML150007317_L01_266_1.fq.gz"}
+RIGHT_fq=${2:-"/Files/RawData/ML150007317_L01/ML150007317_L01_266_2.fq.gz"}
 SORTMERNA_DB=${3:-"/data/work/sortmerna/smr_v4.3_sensitive_db_rfam_seeds.fasta"}
 SAMPLE_SIZE=${4:-10000}
 
@@ -26,16 +30,16 @@ echo "----------------------------------------"
 
 
 # randomly sample $SAMPLE_SIZE reads from each FASTQ file for testing
-$SEQTK_PATH sample -s100 $LEFT_fq $SAMPLE_SIZE > test_R1.fq
-$SEQTK_PATH sample -s100 $RIGHT_fq $SAMPLE_SIZE > test_R2.fq
+$SEQTK_PATH sample -s100 $LEFT_fq $SAMPLE_SIZE | gzip > test_R1.fq.gz
+$SEQTK_PATH sample -s100 $RIGHT_fq $SAMPLE_SIZE | gzip > test_R2.fq.gz
 
 # assess rRNA contamination using SortMeRNA
 echo "----------------------------------------"
 start_time=$(date +%s)
 echo "Starting rRNA assessment at: $(date)"
 sortmerna --ref ${SORTMERNA_DB} \
-          --reads test_R1.fq \
-          --reads test_R2.fq \
+          --reads test_R1.fq.gz \
+          --reads test_R2.fq.gz \
           --other ./test_rrna_out/non_rRNA \
           --aligned ./test_rrna_out/rRNA \
           --paired_in \

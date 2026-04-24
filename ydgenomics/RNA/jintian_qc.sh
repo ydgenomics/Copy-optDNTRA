@@ -1,21 +1,34 @@
-# 260422
-# - 0-assessment
-#   - pre-fastqc
-#   - after-fastqc
-# - 1-fastp
-# - 2-sortmerna
-# - 3-output
+# 260424
 
-PREFIX="test"
-MAX_MEMORY=64G
-THREADS=16
-SORTMERNA_DB=/data/work/sortmerna/smr_v4.3_sensitive_db.fasta
-SORTMERNA_DB_IDX=/data/work/test/idx
+mkdir -p /data/work/jintian && cd /data/work/jintian
+ln -s /data/input/Files/SP_reads_data/*_1.fq .
+ln -s /data/input/Files/SP_reads_data/*_2.fq .
+
+PREFIX="jintian"
+THREADS=8 # fq numbers
+SORTMERNA_DB=/data/users/yangdong/yangdong_5f5c3933d7c44a73bff0cbff6fd8db86/online/sortmerna/smr_v4.3_sensitive_db.fasta
+SORTMERNA_DB_IDX=/data/users/yangdong/yangdong_5f5c3933d7c44a73bff0cbff6fd8db86/online/test/idx.tar.gz
+
+FASTQC_PATH=/opt/software/miniconda3/envs/optdntra/bin/fastqc
+FASTP_PATH=/opt/software/miniconda3/envs/optdntra/bin/fastp
+MULTIQC_PATH=/opt/software/miniconda3/envs/tool/bin/multiqc
+SORTMERNA_PATH=/opt/software/miniconda3/envs/tool/bin/sortmerna
+
+
+# 对工作目录下的.fq文件转变为.gz格式，方便后续处理
+for fq in ./*.fq; do
+    if [[ -f "$fq" ]]; then
+        gzip -c "$fq" > "${fq%.fq}.fq.gz"
+        echo "Compressed $fq to ${fq%.fq}.fq.gz"
+    else
+        echo "No .fq files found in the current directory."
+    fi
+done
 
 echo "Running fastqc..."
 echo "----------------------------------------"
 mkdir -p ./${PREFIX}/0-assessment/pre-fastqc
-fastqc *.fq *.gz -o ./${PREFIX}/0-assessment/pre-fastqc --threads ${THREADS} --memory ${MAX_MEMORY}
+${FASTQC_PATH} ./*.fq.gz -o ./${PREFIX}/0-assessment/pre-fastqc --threads ${THREADS} --memory 10000
 echo "----------------------------------------"
 
 
@@ -36,10 +49,11 @@ for r1 in ./*_1.fq.gz; do
     echo "  R1: ${r1}"
     echo "  R2: ${r2}"
 
-    fastp -i "${r1}" \
+    ${FASTP_PATH} -i "${r1}" \
           -I "${r2}" \
           -o "${OUTPUT_DIR}/${sample_name}_clean_1.fq.gz" \
           -O "${OUTPUT_DIR}/${sample_name}_clean_2.fq.gz" \
+          -6 \
           --detect_adapter_for_pe \
           --cut_front \
           --cut_tail \
@@ -63,12 +77,13 @@ echo "----------------------------------------"
 
 echo "Running fastqc on cleaned data..."
 echo "----------------------------------------"
-mkdir -p ./${PREFIX}/0-assessment/after-fastqc
-fastqc ./${PREFIX}/1-fastp/*_clean_*.fq.gz -o ./${PREFIX}/0-assessment/after-fastqc --threads ${THREADS} --memory ${MAX_MEMORY}
+mkdir -p ./${PREFIX}/0-assessment/after-fastp
+${FASTQC_PATH} ./${PREFIX}/1-fastp/*_clean_*.fq.gz -o ./${PREFIX}/0-assessment/after-fastp --threads ${THREADS} --memory 10000
 echo "----------------------------------------"
 
 echo "Running sortmerna remove rna..."
 echo "----------------------------------------"
+tar -zxvf ${SORTMERNA_DB_IDX}
 mkdir -p ./${PREFIX}/02-sortmerna
 for r1 in ./${PREFIX}/1-fastp/*_1.fq.gz; do
     sample_name=$(basename "$r1" _1.fq.gz)
@@ -82,27 +97,30 @@ for r1 in ./${PREFIX}/1-fastp/*_1.fq.gz; do
     echo "  R1: ${r1}"
     echo "  R2: ${r2}"
 
-    sortmerna --ref ${SORTMERNA_DB} \
-          --reads "${r1}" \
-          --reads "${r2}" \
-          --other ./${PREFIX}/02-sortmerna/non_rRNA_${sample_name} \
-          --aligned ./${PREFIX}/02-sortmerna/rRNA_${sample_name} \
-          --paired_in \
-          --fastx \
-          --threads 16 \
-          --out2 \
-          --workdir .
+    ${SORTMERNA_PATH} \
+    --ref ${SORTMERNA_DB} \
+    --idx-dir ./my_index \
+    --reads "${r1}" \
+    --reads "${r2}" \
+    --other ./${PREFIX}/02-sortmerna/non_rRNA_${sample_name} \
+    --aligned ./${PREFIX}/02-sortmerna/rRNA_${sample_name} \
+    --paired_in \
+    --fastx \
+    --threads 16 \
+    --out2 \
+    --workdir .
     
     echo "completed: ${sample_name}"
     echo "---"
+    rm -rf kvdb && rm -rf readb
 done
 echo "----------------------------------------"
 
 echo "Running fastqc on cleaned rrna data..."
 echo "----------------------------------------"
 mkdir -p ./${PREFIX}/0-assessment/after-sortmerna
-fastqc ./${PREFIX}/02-sortmerna/non_rRNA_* -o ./${PREFIX}/0-assessment/after-sortmerna --threads ${THREADS} --memory ${MAX_MEMORY}
+${FASTQC_PATH} ./${PREFIX}/02-sortmerna/non_rRNA_* -o ./${PREFIX}/0-assessment/after-sortmerna --threads ${THREADS} --memory 10000
 echo "----------------------------------------"
 
 mkdir -p ./${PREFIX}/03-output
-multiqc ./${PREFIX}/0-assessment/after-sortmerna -o ./${PREFIX}/03-output
+${MULTIQC_PATH} ./${PREFIX}/0-assessment/*/* -o ./${PREFIX}/03-output

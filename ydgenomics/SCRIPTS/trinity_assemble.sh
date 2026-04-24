@@ -15,27 +15,28 @@ for fq_2 in $fq_right; do
     head $fq_2
 done
 
-group_list=(R S)
-sample_list=(A B)
-fq_left_list=(/data/work/TEST/leaf_r1_1.fq.gz /data/work/TEST/leaf_r1_2.fq.gz)
-fq_right_list=(/data/work/TEST/leaf_r2_1.fq.gz /data/work/TEST/leaf_r2_2.fq.gz)
 
-# 获取数组长度（假设所有数组长度一致）
+group_str="R,S"
+sample_str="A,B"
+fq_left_str="/data/work/TEST/leaf_r1_1.fq.gz,/data/work/TEST/leaf_r1_2.fq.gz"
+fq_right_str="/data/work/TEST/leaf_r2_1.fq.gz,/data/work/TEST/leaf_r2_2.fq.gz"
+
+IFS=',' read -r -a group_list <<< "$group_str"
+IFS=',' read -r -a sample_list <<< "$sample_str"
+IFS=',' read -r -a fq_left_list <<< "$fq_left_str"
+IFS=',' read -r -a fq_right_list <<< "$fq_right_str"
+
+
 length=${#group_list[@]}
-
 for ((i=0; i<$length; i++)); do
     group=${group_list[$i]}
     sample=${sample_list[$i]}
     fq_l=${fq_left_list[$i]}
     fq_r=${fq_right_list[$i]}
-
     echo "正在处理组: $group, 样本: $sample"
     echo "左端文件: $fq_l"
     echo "右端文件: $fq_r"
     echo "--------------------------"
-    
-    # 在这里运行你的分析命令，例如：
-    # fastp -i $fq_l -I $fq_r -o ${sample}_clean_1.fq.gz -O ${sample}_clean_2.fq.gz
     if [ $i -eq 0 ]; then
         printf "${group}\t${sample}\t${fq_l}\t${fq_r}\n" > output.txt
     else
@@ -43,18 +44,12 @@ for ((i=0; i<$length; i++)); do
     fi
 done
 
-
-printf "S\tB\t/data/work/TEST/leaf_r2_1.fq.gz\t/data/work/TEST/leaf_r1_2.fq.gz\n" >> output.txt
-
-fastqc -h
-multiqc -h #整合报告
-
-Trinity -h
 Trinity --seqType fq \
 --max_memory 64G \
 --samples_file output.txt \
 --CPU 8 \
---output /data/work/TEST/trinity_out
+--no_normalize_reads \
+--output trinity_out
 
 
 

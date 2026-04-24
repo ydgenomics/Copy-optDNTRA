@@ -60,3 +60,7 @@ TransDecoder -t target_transcripts.fasta -m 100 --single_best_only -O transdecod
 - 转录组的组装|三种方式 [wechat](https://mp.weixin.qq.com/s/6exQwZefVkyLI1unI4XvMA)
 - 转录组无参比对教程 | Trinity https://mp.weixin.qq.com/s/UAnaiSMxrUeI6bBGnfIcZQ
 - 2026 | Genome Biology | 三代测序无参转录组组装哪家强？ [wechat](https://mp.weixin.qq.com/s/p32k2lDOXzBOczqiAElhlw)
+- 生信软件| 一文拿捏2种gff/gtf格式转换工具 https://mp.weixin.qq.com/s/japP5gZYOtgJXQCevduIKw
+- https://biohpc.cornell.edu/lab/doc/trinity_workshop_part1.pdf
+- https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/full-de-novo/tutorial.html
+- 2022 | https://academic.oup.com/bib/article/23/2/bbab563/6514404

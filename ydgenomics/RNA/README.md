@@ -1,5 +1,9 @@
 # RNA-seq pipeline
 
+```mermaid
+flowchart TB
+0.0[(.fq.gz)] --> 0[fastqc] --> 1[fastp] --> 2[sortmerna] --> 3[trinity] --> 4[/optDNTRA/]
+```
 
 
 ## Reference

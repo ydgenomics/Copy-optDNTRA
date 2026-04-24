@@ -13,6 +13,13 @@ sortmerna --index --ref smr_v4.3_sensitive_db.fasta --workdir /data/work/sortmer
 # 进入数据库目录
 cd /data/work/sortmerna
 
+# 只运行一次，用于构建/验证索引
+mkdir -p ./my_index
+sortmerna \
+--ref ${SORTMERNA_DB} \
+--idx-dir ./my_index \
+--workdir .
+
 # 确保索引文件存在（如果还没有 .idx 文件）
 for db in *.fasta; do
     indexdb_rna --ref "$db"
