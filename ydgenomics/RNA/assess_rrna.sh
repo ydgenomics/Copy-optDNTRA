@@ -39,7 +39,7 @@ ${SORTMERNA_PATH} --ref ${SORTMERNA_DB} \
           --aligned ./sortmerna_out/${SAMPLE_ID}_rRNA \
           --paired_in \
           --fastx \
-          --threads 16 \
+          --threads 4 \
           --out2 \
           --workdir .
 
