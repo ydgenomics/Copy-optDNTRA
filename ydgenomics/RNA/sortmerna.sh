@@ -1,0 +1,11 @@
+/opt/software/miniconda3/envs/tool/bin/sortmerna \
+--ref ${SORTMERNA_DB} \
+--reads test_R1.fq.gz \
+--reads test_R2.fq.gz \
+--other ./sortmerna_out/${SAMPLE_ID}_non_rRNA \
+--aligned ./sortmerna_out/${SAMPLE_ID}_rRNA \
+--paired_in \
+--fastx \
+--threads 16 \
+--out2 \
+--workdir .
