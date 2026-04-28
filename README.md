@@ -16,7 +16,7 @@ source /opt/software/miniconda3/bin/activate
 mamba env create -n optdntra -f ./Copy-optDNTRA/environment.yml -y
 conda activate optdntra
 export PATH=/Copy-optDNTRA:$PATH && optDNTRA.py -h
-conda create -n tool gffread multiqc sortmerna agat -y
+conda create -n tool gffread multiqc sortmerna agat seqkit -y
 ```
 
 **测试**

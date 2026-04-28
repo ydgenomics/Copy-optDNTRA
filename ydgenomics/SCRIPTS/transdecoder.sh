@@ -20,3 +20,23 @@ gffread \
 -C \
 -T \
 -o transdecoder.gtf
+
+targetGTF='/data/work/TEST/transdecoder.gtf'
+
+# 1. 统计GTF内容
+echo "=== GTF文件统计 ==="
+echo "总行数:"
+wc -l $targetGTF
+
+echo -e "\n特征类型分布:"
+awk '!/^#/ {print $3}' $targetGTF | sort | uniq -c | sort -rn
+
+echo -e "\n基因数量估计:"
+grep -c 'gene_id' $targetGTF | head -10
+
+echo -e "\n转录本数量估计:"
+grep -c 'transcript_id' $targetGTF | head -5
+
+# 2. 检查染色体覆盖
+echo -e "\n染色体列表:"
+cut -f1 $targetGTF | sort -u | head -10
