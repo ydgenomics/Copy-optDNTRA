@@ -99,6 +99,8 @@ optDNTRA.py \
 # By default, TransDecoder extracts ORFs that are at least 100 amino acids long. You can lower this via -m, but the false positive rate increases substantially as the minimum length drops.
 TransDecoder -t target_transcripts.fasta -m 100 --single_best_only -O transdecoder_outdir
 # The final set of candidate coding regions is written as *.transdecoder.* files, including .pep, .cds, .gff3, and .bed.
+
+agat_convert_sp_gff2gtf.pl
 ```
 
 ## Note

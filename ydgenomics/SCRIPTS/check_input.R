@@ -32,7 +32,7 @@ get_tsv <- function(left_list, right_list) {
     if (length(parts) < 3) {
       stop(paste("Filename format error (need at least 2 underscores):", filename))
     }
-    # 返回前两部分作为 Tissue 和 Sample，最后一部分作为 Fastq 路径
+    # 返回前两部分作为 Tissue 和 Sample
     return(c(tissue = parts[1], sample = parts[2], fq = filename))
   }
   # 3. 循环提取数据
