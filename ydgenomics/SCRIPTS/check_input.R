@@ -1,12 +1,12 @@
-# 260414
+# 260506
 # .fa.gz文件的组成必须为 
 # [Tissue label]_[Replicate label]_1.fa.gz
 # [Tissue label]_[Replicate label]_2.fa.gz
 
-
+# Rscript /data/work/check_input.R /data/input/Files/yangdong/P/p-jintian/optdntra/0A1R_w4q20m35_N_fixed_1.fq,/data/input/Files/yangdong/P/p-jintian/optdntra/10B2R_w4q20m35_N_fixed_1.fq /data/input/Files/yangdong/P/p-jintian/optdntra/0A1R_w4q20m35_N_fixed_2.fq,/data/input/Files/yangdong/P/p-jintian/optdntra/10B2R_w4q20m35_N_fixed_2.fq
 args <- commandArgs(trailingOnly = TRUE)
 left_list <- strsplit(args[1], ',')[[1]] # '/data/work/TEST/leaf_r1_2.fq.gz,/data/work/TEST/leaf_r2_2.fq.gz'
-if (length(args) > 2) {
+if (length(args) == 2) {
   right_list <- strsplit(args[2], ',')[[1]] # '/data/work/TEST/leaf_r1_2.fq.gz,/data/work/TEST/leaf_r2_2.fq.gz'
 } else {
   right_list <- c()
