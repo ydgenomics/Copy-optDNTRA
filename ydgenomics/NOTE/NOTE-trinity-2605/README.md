@@ -55,13 +55,15 @@ Trinity --seqType fq \
         --output trinity_out_dir
 ```
 
-trinity输出两个文件和一个文件夹，由参数`--output [trinity output dir]`控制，输出[trinity output dir]文件夹放的是中间文件；[trinity output dir].Trinity.fasta的fa文件，序列名为转录本名字，去掉`_i*`即基因的名字；[trinity output dir].fasta.gene_trans_map是一个tab分隔的txt文件，两列，第一列为基因名，第二列为转录本名字。
+trinity输出两个文件和一个文件夹，由参数`--output [trinity output dir]`控制，输出[trinity output dir]文件夹放的是中间文件；[trinity output dir].Trinity.fasta的fa文件，序列名为转录本名字，去掉`_i*`即基因的名字；[trinity output dir].fasta.gene_trans_map是一个tab分隔的txt文件，两列，第一列为基因名，第二列为转录本名字。trinity输出的fasta文件包含很多个.，不兼容optDNTRA的输入，所以`mv trinity_out.Trinity.fasta Trinity.fasta`
 
 
 统计组装的情况，转录本与基因数
 ```shell
 TrinityStats.pl Trinity.fasta >& stats.log
 ```
+~~mapping率~~
+
 
 ## Trinity -h
 ```shell
@@ -180,6 +182,10 @@ $ Trinity -h
 ```
 
 ## Workflow
+```mermaid
+flowchart LR
+1[clean-raw-reads] --> 2[trinity] --> 3[optdntra] --> 4[transdecoder] --> 5[agat] --> 6[dnbc4tools]
+```
 > - 总结一下：你的覆盖度过高问题，主要应归咎于PCR重复或高丰度RNA，而非接头污染。建议先通过FastQC报告确认接头情况，然后将重心放在去除重复序列上，这很可能直接解决你的问题
 > - 备选方案：如果你的确是RNA-seq数据，在Trinity组装前，应使用sortmerna或bowtie2等工具去除rRNA。如果去除rRNA后问题依旧，再考虑去重。
 > - 确认rRNA含量：建议先用比对工具（如Bowtie2或STAR）将你的reads比对到该植物的rRNA参考序列上（如果不知道具体物种，可以选用近缘种或通用的植物rRNA序列）。如果比对率超过50%，就证实了rRNA是“元凶”之一 `/Files/ReferenceData/Database/plant_ref_rRNA/plant_rRNA.fa`

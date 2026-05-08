@@ -1,15 +1,63 @@
 # [optDNTRA](https://github.com/zywu2002/optDNTRA)
 
-## Project
-杨同学，我们问了，现在我们是有Sp（伴矿景天，就是我们现在在测的超富集型的景天）和Sa（东南景天，不富集型的景天）的转录组测序的原始数据，现成的那个Trinity.fasta文件是把这两个测序数据合并之后组装出来的（意思可能是把Sa和Sp所有的数据合在一起当成是一个物种，拿trinity组装了一个出来），那这样的话这个Trinity.fasta我们能用不，是不是应该重新装一个只有Sp的Trinity.fasta
+- batch模式下的1-procession会有问题，后面debug
+
+to-do
+- data # 10A2R有问题，则只有B的数据，即两个组织两个镉处理即2x2
+- check-fq 排队fq数据的序列名一定要一一对应，只接受末尾的差别/1和/2
+- fq-qc 对原始的二代fq数据进行质控 fastqc-fastp-fastqc-multiqc
+  > - 做好输出的记录，log file
+- clean-fq 可选去除环境污染和rRNA，以减少组装的复杂度和资源消耗
+  - "/Files/ReferenceData/Database/plant_ref_rRNA/plant_rRNA.fa"
+  - 植物的rRNA在各个物种的保守性如何？
+  > - 也要重命名，sortmerna的后缀不是_1和_2
+- assemble-trinity 无参考de novo组装
+  > - 组装后对Trinity.fasta做重命名，解决多.的问题，另外添加'_'check，序列名存在_则全部替换为-，规避后续Seurat的问题
+- clean-rrna 组装之后拿到Trinity.fasta，一条序列一个名字，通过比对去掉rrna的序列，设置一个cutoff (bowtie2?)
+- optdntra 去冗余、组装质量评估和功能注释
+  > - 文件名只能包含后缀的一个.
+  > - batch模式不要参数`--trim` & `--qc`
+- transdecoder-gffread 拿到结构注释的gtf文件用于后面跑dnbc4
+
+
+## Note
+- agat 解决gffread转换gff为gtf时类别丢失的问题
+- seqkit解决fastp处理后存在非配对reads的情况，其实fastp自带参数保证reads配对``
+- seqtk用于随机取fq的reads，提供小样本的测试文件
+- transcript, exon, CDS：transcript一般包括exon和intron，exon一般和CDS是一致的，但是因为存在两端的UTR区域，exon存在大于CDS的情况，包含UTR注释的gtf，可以有利于转录本定量比对，因为转录本捕获依赖于polyA，那么3UTR的注释有利于提高比对率
+- 对Trinity组装后的结果运行transdecoder，其注释到的$3类型包含transcript，exon和CDS这三类，测试dnbc4tools的build-index是可以运行的
+- optDNTRA不能只输入fq.gz，必须事先用trinity组装一版出来
+- Trinity多样本组装可以使用`--samples_file`的tab分隔的文本文件传递，也可以选择在`--left`和`--right`多个文件通过`,`连接来跑
+- multiqc默认是去寻找报告文件，可以指定文件夹，也可以指定多个具体的文件通过" "连接，最后输出的是一个中间文件目录`multiqc_data`和`multiqc_report.html`
+- fastqc也是可以指定多个文件通过空格连接来跑
+- de novel transcriptome assemble: 无参考转录组组装
+  > 1)转录组数据能够提供高质量的编码序列，用于同源基因鉴定、基因家族扩张与收缩分析，以及跨物种功能注释比对; 2)即便已有基因组序列，转录组仍可用于优化注释、补充低表达或组织特异基因，提高比较分析的准确性; 3)在系统发育研究中，转录组组装为筛选直系同源基因和构建大规模核基因数据矩阵提供关键资源。
+- 
+
+## References
+- Trinity 实战指南：无参考转录组组装从原理到实操 [wechat](https://mp.weixin.qq.com/s/1GZBS58SY2UnBwY29rHj0w)
+- 组装出的转录本太多，咋办？[wechat](https://mp.weixin.qq.com/s/6fT53eTED375OlsepdqmFw)
+- 转录组的组装|三种方式 [wechat](https://mp.weixin.qq.com/s/6exQwZefVkyLI1unI4XvMA)
+- 转录组无参比对教程 | Trinity https://mp.weixin.qq.com/s/UAnaiSMxrUeI6bBGnfIcZQ
+- 2026 | Genome Biology | 三代测序无参转录组组装哪家强？ [wechat](https://mp.weixin.qq.com/s/p32k2lDOXzBOczqiAElhlw)
+- 生信软件| 一文拿捏2种gff/gtf格式转换工具 https://mp.weixin.qq.com/s/japP5gZYOtgJXQCevduIKw
+- https://biohpc.cornell.edu/lab/doc/trinity_workshop_part1.pdf
+- https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/full-de-novo/tutorial.html
+- 2022 | https://academic.oup.com/bib/article/23/2/bbab563/6514404
+- 长文解析！de novo转录组组装和注释的简单指南（一）：下机数据质控、转录组组装和组装后质控 https://mp.weixin.qq.com/s/C_wvVsaVDgum5u0bgY9OlA
+- 2022 生信宝库推荐 | RiboDetector：高通量测序数据鉴别和去除rRNA序列利器 https://mp.weixin.qq.com/s/EJb9UsorqwZzXkxXJU5LCw
+
 
 
 ## Env
+
+**install mamba**
 ```shell
 conda update -n base -c defaults conda -y
 conda install -n base -c conda-forge mamba -y
 ```
 
+**build optdntra**
 ```shell
 cd / && git clone --depth 1 https://github.com/ydgenomics/Copy-optDNTRA.git
 source /opt/software/miniconda3/bin/activate
@@ -102,28 +150,3 @@ TransDecoder -t target_transcripts.fasta -m 100 --single_best_only -O transdecod
 
 agat_convert_sp_gff2gtf.pl
 ```
-
-## Note
-- agat 解决gffread转换gff为gtf时类别丢失的问题
-- seqkit解决fastp处理后存在非配对reads的情况，其实fastp自带参数保证reads配对``
-- seqtk用于随机取fq的reads，提供小样本的测试文件
-- transcript, exon, CDS：transcript一般包括exon和intron，exon一般和CDS是一致的，但是因为存在两端的UTR区域，exon存在大于CDS的情况，包含UTR注释的gtf，可以有利于转录本定量比对，因为转录本捕获依赖于polyA，那么3UTR的注释有利于提高比对率
-- 对Trinity组装后的结果运行transdecoder，其注释到的$3类型包含transcript，exon和CDS这三类，测试dnbc4tools的build-index是可以运行的
-- optDNTRA不能只输入fq.gz，必须事先用trinity组装一版出来
-- Trinity多样本组装可以使用`--samples_file`的tab分隔的文本文件传递，也可以选择在`--left`和`--right`多个文件通过`,`连接来跑
-- multiqc默认是去寻找报告文件，可以指定文件夹，也可以指定多个具体的文件通过" "连接，最后输出的是一个中间文件目录`multiqc_data`和`multiqc_report.html`
-- fastqc也是可以指定多个文件通过空格连接来跑
-- de novel transcriptome assemble: 无参考转录组组装
-  > 1)转录组数据能够提供高质量的编码序列，用于同源基因鉴定、基因家族扩张与收缩分析，以及跨物种功能注释比对; 2)即便已有基因组序列，转录组仍可用于优化注释、补充低表达或组织特异基因，提高比较分析的准确性; 3)在系统发育研究中，转录组组装为筛选直系同源基因和构建大规模核基因数据矩阵提供关键资源。
-- 
-
-## References
-- Trinity 实战指南：无参考转录组组装从原理到实操 [wechat](https://mp.weixin.qq.com/s/1GZBS58SY2UnBwY29rHj0w)
-- 组装出的转录本太多，咋办？[wechat](https://mp.weixin.qq.com/s/6fT53eTED375OlsepdqmFw)
-- 转录组的组装|三种方式 [wechat](https://mp.weixin.qq.com/s/6exQwZefVkyLI1unI4XvMA)
-- 转录组无参比对教程 | Trinity https://mp.weixin.qq.com/s/UAnaiSMxrUeI6bBGnfIcZQ
-- 2026 | Genome Biology | 三代测序无参转录组组装哪家强？ [wechat](https://mp.weixin.qq.com/s/p32k2lDOXzBOczqiAElhlw)
-- 生信软件| 一文拿捏2种gff/gtf格式转换工具 https://mp.weixin.qq.com/s/japP5gZYOtgJXQCevduIKw
-- https://biohpc.cornell.edu/lab/doc/trinity_workshop_part1.pdf
-- https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/full-de-novo/tutorial.html
-- 2022 | https://academic.oup.com/bib/article/23/2/bbab563/6514404
