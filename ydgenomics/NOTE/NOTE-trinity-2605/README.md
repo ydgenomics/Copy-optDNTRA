@@ -6,6 +6,7 @@
 - 组装后注释：获得gff/gtf文件
 - state of the art：在实际使用中，它指的是 最先进的、最顶尖的、达到当前最高水平的。
 - 测序深度和覆盖度
+- 如何计算使用max_memory, 80M x 150 bp = 12,000,000,000 即12G
 
 ##
 ![alt text](image-1.png)

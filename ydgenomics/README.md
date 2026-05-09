@@ -13,6 +13,7 @@ to-do
   > - 也要重命名，sortmerna的后缀不是_1和_2
 - assemble-trinity 无参考de novo组装
   > - 组装后对Trinity.fasta做重命名，解决多.的问题，另外添加'_'check，序列名存在_则全部替换为-，规避后续Seurat的问题
+  `sed -i '/^>/s/_/-/g' trinity.fasta`
 - clean-rrna 组装之后拿到Trinity.fasta，一条序列一个名字，通过比对去掉rrna的序列，设置一个cutoff (bowtie2?)
 - optdntra 去冗余、组装质量评估和功能注释
   > - 文件名只能包含后缀的一个.
@@ -28,11 +29,12 @@ to-do
 - 对Trinity组装后的结果运行transdecoder，其注释到的$3类型包含transcript，exon和CDS这三类，测试dnbc4tools的build-index是可以运行的
 - optDNTRA不能只输入fq.gz，必须事先用trinity组装一版出来
 - Trinity多样本组装可以使用`--samples_file`的tab分隔的文本文件传递，也可以选择在`--left`和`--right`多个文件通过`,`连接来跑
-- multiqc默认是去寻找报告文件，可以指定文件夹，也可以指定多个具体的文件通过" "连接，最后输出的是一个中间文件目录`multiqc_data`和`multiqc_report.html`
+- multiqc默认是去寻找报告文件，可以指定文件夹，也可以指定多个具体的文件通过" "连接，最后输出的是一个中间文件目录`multiqc_data`和`multiqc_report.html`。MultiQC报告中显示的 Seqs 列，通常来源于其集成的 FastQC 工具。而 FastQC 为了计算效率，默认只分析每个测序文件的前 100,000 到 200,000 条 reads
 - fastqc也是可以指定多个文件通过空格连接来跑
 - de novel transcriptome assemble: 无参考转录组组装
-  > 1)转录组数据能够提供高质量的编码序列，用于同源基因鉴定、基因家族扩张与收缩分析，以及跨物种功能注释比对; 2)即便已有基因组序列，转录组仍可用于优化注释、补充低表达或组织特异基因，提高比较分析的准确性; 3)在系统发育研究中，转录组组装为筛选直系同源基因和构建大规模核基因数据矩阵提供关键资源。
-- 
+  > - 1)转录组数据能够提供高质量的编码序列，用于同源基因鉴定、基因家族扩张与收缩分析，以及跨物种功能注释比对; 2)即便已有基因组序列，转录组仍可用于优化注释、补充低表达或组织特异基因，提高比较分析的准确性; 3)在系统发育研究中，转录组组装为筛选直系同源基因和构建大规模核基因数据矩阵提供关键资源。
+  > - ~1GB 内存 / 百万条 reads（100bp）
+
 
 ## References
 - Trinity 实战指南：无参考转录组组装从原理到实操 [wechat](https://mp.weixin.qq.com/s/1GZBS58SY2UnBwY29rHj0w)
