@@ -4,9 +4,9 @@ version 1.0
 workflow Hello{
   input{
     File transcript_fa="/Files/yangdong/WDL/optdntra/trinity.fasta"
-    Array[File] left_fq=["/Files/yangdong/WDL/optdntra/reads_1.fq.gz","/Files/yangdong/WDL/optdntra/reads_2.fq.gz"] # "_1" and "_2"
-    Array[File] right_fq
-    String tools="--omarkAsmt --buscoAsmt --emapperAnno"
+    Array[File] left_fq=["/Files/yangdong/WDL/optdntra/leaf_r1_1.fq.gz"] # "_1" and "_2"
+    Array[File] right_fq=["/Files/yangdong/WDL/optdntra/leaf_r1_2.fq.gz"]
+    String tools="--omarkAsmt --buscoAsmt" # "--trim --qc --omarkAsmt --buscoAsmt --emapperAnno"
     File swiss_prot="/Files/yangdong/WDL/optdntra/uniprot_sprot.fasta"
     File pfam_hmm="/Files/yangdong/WDL/optdntra/Pfam-A.hmm"
     File busco_downloads="/Files/yangdong/WDL/optdntra/busco_downloads.tar.gz"
@@ -35,8 +35,13 @@ workflow Hello{
     cpu=cpu,
     mem=mem,
   }
+  call gtf{
+    input:
+    dir=optdntra.result,
+    outDir=outDir,
+  }
   output{
-    File result=optdntra.result
+    File result=gtf.result
   }
 }
 task optdntra{
@@ -87,8 +92,7 @@ task optdntra{
             --transcript ~{transcript_fa} \
             --left ~{sep="," left_fq} \
             --right ~{sep="," right_fq} \
-            --outDir ~{outDir} \
-            --trim --qc ~{tools} \
+            --outDir ~{outDir} ~{tools} \
             --threads ~{cpu}
         else
             echo "Run single analysis..."
@@ -97,25 +101,54 @@ task optdntra{
             --transcript ~{transcript_fa} \
             --fastq ~{sep="," left_fq} \
             --singleEnd \
-            --outDir ~{outDir} \
-            --trim --qc ~{tools} \
+            --outDir ~{outDir} ~{tools} \
             --threads ~{cpu}
         fi
     else
-        echo "Detect $line_count line..."
+        echo "###Detect $line_count line..."
         optDNTRA.py \
         --config /Copy-optDNTRA/defaults-dcs.yml \
         --transcript ~{transcript_fa} \
         --sampleSheet optdntra.tsv \
-        --outDir ~{outDir} \
-        --trim --qc ~{tools} \
+        --outDir ~{outDir} ~{tools} \
         --threads ~{cpu}
     fi
   >>>
   runtime {
-    docker_url: "stereonote_hpc/yangdong_34155ddaf01e4861a89d2fda3f0f74ef_private:latest"
+    docker_url: "stereonote_hpc/yangdong_50b2433e483b4008a87e4c63648144be_private:latest"
     req_cpu: cpu
     req_memory: "~{mem}Gi"
+  }
+  output {
+    File result = "~{outDir}"
+    #File fa = "./~{outDir}/results/02-optimization/03-transEvidence/transcript.flt.final.fa"
+  }
+}
+
+task gtf{
+  input {
+    File dir
+    String outDir
+  }
+  command <<<
+    cp -a ~{dir} .
+    source /opt/software/miniconda3/bin/activate && conda activate optdntra
+    final_fa="./~{outDir}/results/02-optimization/03-transEvidence/transcript.flt.final.fa"
+    TransDecoder.LongOrfs -t $final_fa -m 100 -O ./~{outDir}/results/05-transdecoder
+    TransDecoder.Predict -t $final_fa --single_best_only -O ./~{outDir}/results/05-transdecoder
+    
+    conda activate tool
+    final_gff="./~{outDir}/results/05-transdecoder/transcript.flt.final.fa.transdecoder.gff3"
+    gffread $final_gff -T -o "./~{outDir}/results/05-transdecoder/transcript.flt.final.fa.transdecoder.gffread.gtf"
+    
+    mkdir -p ./~{outDir}/out
+    cp ./~{outDir}/results/02-optimization/03-transEvidence/transcript.flt.final.fa ./~{outDir}/out
+    cp ./~{outDir}/results/05-transdecoder/transcript.flt.final.fa.transdecoder.gffread.gtf ./~{outDir}/out
+  >>>
+  runtime {
+    docker_url: "stereonote_hpc/yangdong_50b2433e483b4008a87e4c63648144be_private:latest"
+    req_cpu: 2
+    req_memory: "16Gi"
   }
   output {
     File result = "~{outDir}"
