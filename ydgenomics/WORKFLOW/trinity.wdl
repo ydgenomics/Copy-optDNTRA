@@ -42,6 +42,7 @@ task sayHello{
     --max_memory ~{max_mem}G --CPU ~{cpu} --output trinity_out \
     ~{parameter} 2>&1 | tee -a log.txt
     mv trinity_out.Trinity.fasta trinity.fasta
+    sed -i '/^>/s/_/-/g' trinity.fasta
   >>>
   runtime {
     docker_url: "stereonote_hpc/yangdong_34155ddaf01e4861a89d2fda3f0f74ef_private:latest"
