@@ -34,3 +34,5 @@ taxid: 4530
 # If not specified, the workflow will download the latest version from:
 # http://eggnog6.embl.de/download/emapperdb-5.0.2/eggnog.db.gz
 emapper_database: "./db/eggnog.db"
+
+# cd-hit

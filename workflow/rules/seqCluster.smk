@@ -3,6 +3,8 @@ import logging
 import optDNTRA_utils as utils
 from time import time
 
+### Configuration Setup ### ----------------------------------------
+# TRANSCRIPTPREFLT = config["transcript"]
 
 ### Logging Setup ### ----------------------------------------
 LOG_SEQCLUSTER = utils.get_logger("SEQCLUSTER", VERBOSE)

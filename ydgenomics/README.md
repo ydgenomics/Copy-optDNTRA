@@ -1,8 +1,8 @@
 # [optDNTRA](https://github.com/zywu2002/optDNTRA)
 
-- batch模式下的1-procession会有问题，后面debug
 
-to-do
+
+
 - data # 10A2R有问题，则只有B的数据，即两个组织两个镉处理即2x2
 - check-fq 排队fq数据的序列名一定要一一对应，只接受末尾的差别/1和/2
 - fq-qc 对原始的二代fq数据进行质控 fastqc-fastp-fastqc-multiqc
@@ -18,7 +18,13 @@ to-do
 - optdntra 去冗余、组装质量评估和功能注释
   > - 文件名只能包含后缀的一个.
   > - batch模式不要参数`--trim` & `--qc`
-- transdecoder-gffread 拿到结构注释的gtf文件用于后面跑dnbc4
+- transdecoder-gffread 拿到结构注释的gtf文件用于后面跑dnbc4，是否需要用原始reads补出UTR区。
+
+## to-do
+- 原作者并没有使用transdecoder，而是手搓生成的一个gtf。dnbc4tools似乎不止需要特征exon
+- batch模式下的1-procession会有问题，后面debug
+- trinity组装后的序列名太长做重命名
+- 提供cd-hit阈值参数，更严苛，而非默认参数
 
 
 ## Note

@@ -64,7 +64,10 @@ trinity输出两个文件和一个文件夹，由参数`--output [trinity output
 TrinityStats.pl Trinity.fasta >& stats.log
 ```
 ~~mapping率~~
+```shell
 
+
+```
 
 ## Trinity -h
 ```shell
@@ -342,68 +345,3 @@ Trinity在组装时，会利用这个化学标记的信息来构建一个**有�
 因此，对于链特异性数据，正确设置`--SS_lib_type RF`参数不是“建议”，而是**必要条件**。它能将“混乱的二维信息”转化为“有序的三维结构”，是保证后续所有分析正确性的基石。
 
 </details>
-
-## 链特异性确定
-<details> <summary> 链特异性确定 </summary>
-
-知道链特异性方向是 Trinity 组装中最关键的一步，这个参数一旦设错，可能会导致组装出的转录本数量极少、长度极短，或者表达量估计完全错误。
-
-要确定方向，有三种方法，最推荐的方案是“**先问清楚，再验证确认**”。
-
-### 🔎 方法一：直接询问实验人员（最可靠）
-
-这是最直接、最不容易出错的方法。直接联系建库或测序的负责人，问清楚一个问题即可：
-
-> **“文库是用 dUTP 方法构建的吗？”**
-
-*   **如果回答“是”**：那么 99% 的情况，你在 Trinity 中应设置参数为 **`--SS_lib_type RF`**。
-*   **如果回答“否”或不确定**：你需要进一步追问具体的建库试剂盒名称，或直接采用下面的方法二进行验证。
-
-> **一个简单的记忆方法**：目前绝大多数主流链特异性文库都采用 dUTP 方法，对应的 Trinity 参数就是 **`RF`**。
-
-### 🛠️ 方法二：用 Trinity 自带脚本验证（最准确）
-
-如果你无法从实验人员那里获得确切信息，或者想对自己下载的公共数据（如 SRA 数据）进行确认，Trinity 提供了一个非常可靠的验证脚本。
-
-这个方法的原理是：先用默认（非链特异性）方式跑一个**迷你版的组装**，然后将你的 reads 比对回去，通过分析比对的方向来推断文库类型。虽然需要一些计算时间，但结果是决定性的。
-
-**具体步骤如下：**
-
-1.  **准备一个小数据集**：从你的原始数据中随机提取 20-50 万对 reads 用于测试。
-2.  **运行 Trinity（暂时不加链特异性参数）**：用这个小数据集进行一个快速组装。
-    ```bash
-    # 使用小数据集，不加 --SS_lib_type 参数
-    Trinity --seqType fq --max_memory 20G --left test_R1.fq --right test_R2.fq --CPU 4 --output trinity_test
-    ```
-3.  **将 reads 比对回组装结果**：使用 Bowtie2 将你用来组装的 reads 比对到刚生成的 `Trinity.fasta` 上。
-4.  **运行检查脚本**：使用 Trinity 自带的 `examine_strand_specificity.pl` 脚本分析比对结果。
-    ```bash
-    $TRINITY_HOME/util/misc/examine_strand_specificity.pl bowtie2.coordSorted.bam
-    ```
-5.  **解读结果**：这个脚本会生成一个“小提琴图”（violin plot）。你需要观察图形的形状：
-    *   **如果图形像一个“哑铃”或“蝴蝶结”**，中间低、两头高，这说明你的数据是**链特异性的**。此时再看 X 轴，如果主要峰在 “+” 或 “-” 一侧，则可判断具体方向。
-    *   **如果图形像一个“倒U形”或“山峰”**，中间高、两头低，这说明你的数据是**非链特异性的**，不需要设置 `--SS_lib_type` 参数。
-
-### 📖 方法三：根据建库原理推断（背景知识）
-
-如果你了解建库原理，也可以根据下表进行推断。但此方法依赖于你对实验流程的准确了解，不如前两种方法直接。
-
-| 建库方法/试剂盒 | 对应的链特异性类型 | Trinity 参数 (`--SS_lib_type`) |
-| :--- | :--- | :--- |
-| **dUTP, NSR, NNSR** | **链特异性 (fr-firststrand)** | **`RF`** (最常用)  |
-| Ligation, Standard SOLiD | 链特异性 (fr-secondstrand) | `FR`  |
-| Standard Illumina | 非链特异性 (fr-unstranded) | 无需设置 (或设置为 `--no_strand_check`)  |
-
-> **关于 RF 的含义**：`RF` 代表 R1 read 与转录本方向**相反 (Reverse)**，而 R2 read 方向**相同 (Forward)**。这是 dUTP 文库的典型特征。你只需要知道 Trinity 的参数应该设置为 `RF` 即可，软件内部会自动处理。
-
-### 💎 总结与建议
-
-1.  **首选方案**：直接问实验人员是否是 dUTP 建库。如果是，就放心地用 `--SS_lib_type RF`。
-2.  **验证方案**：如果无法确定，或者想对结果负责，一定要用 **方法二** 的 Trinity 官方脚本进行验证。虽然多花点时间，但能避免“结果全错”的风险。
-
-确认方向后，就可以将它加到你的 Trinity 命令里了：
-```bash
-Trinity --seqType fq --left left.fq --right right.fq --SS_lib_type RF --CPU 10 --max_memory 50G --output trinity_out
-```
-
-</details
